@@ -24,13 +24,25 @@ return array(
     ),
     'router' => array(
         'routes' => array(
+            'home' => array(
+                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'options' => array(
+                    'route'    => '/application',
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'LegacyRS\Controller',
+                        'controller'    => 'LegacyRS',
+                        'action'     => 'index',
+                    ),
+                ),
+            ),
             'wildcard' => array(
                 'type' => 'hostname',
                 'options' => array(
                     'route' => ':subdomain.:domain.:tld',
                     'defaults' => array(
-                        'controller' => 'LegacyRS\Controller\LegacyRS',
-                        'action' => 'index'
+                        '__NAMESPACE__' => 'LegacyRS\Controller',
+                        'controller'    => 'LegacyRS',
+                        'action'        => 'index'
                     )
                 )
             )
