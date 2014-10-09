@@ -27,7 +27,7 @@ return array(
             'wildcard' => array(
                 'type' => 'hostname',
                 'options' => array(
-                    'route' => 'dam4.daleycrm.com',
+                    'route' => 'subdomain.:domain.:tld',
                     'defaults' => array(
                         'controller' => 'Legacy\Controller\Legacy',
                         'action' => 'index'
