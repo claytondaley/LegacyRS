@@ -16,16 +16,15 @@ You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Legacy\Controller;
+namespace LegacyRS\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 
-class LegacyController extends AbstractActionController
+class LegacyRSController extends AbstractActionController
 {
 
     public function indexAction()
     {
-
         $request  = $this->getRequest();
         $response = $this->getResponse();
 
@@ -36,7 +35,7 @@ class LegacyController extends AbstractActionController
             $page = 'index.php';
         }
         # Attach full path structure (ZF2 defaults to application root)
-        $page = getcwd() . '/module/Legacy/legacy/' . $page;
+        $page = getcwd() . '/module/LegacyRS/legacy/' . $page;
 
         if (file_exists($page)) {
             # Set corect mimetype

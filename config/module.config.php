@@ -19,7 +19,7 @@ You should have received a copy of the GNU General Public License
 return array(
     'controllers' => array(
         'invokables' => array(
-            'Legacy\Controller\Legacy' => 'Legacy\Controller\LegacyController',
+            'LegacyRS\Controller\LegacyRS' => 'LegacyRS\Controller\LegacyRSController',
         ),
     ),
     'router' => array(
@@ -29,7 +29,7 @@ return array(
                 'options' => array(
                     'route' => 'dam4.daleycrm.com',
                     'defaults' => array(
-                        'controller' => 'Legacy\Controller\Legacy',
+                        'controller' => 'LegacyRS\Controller\LegacyRS',
                         'action' => 'index'
                     )
                 )
