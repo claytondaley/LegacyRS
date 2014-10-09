@@ -27,7 +27,7 @@ return array(
             'wildcard' => array(
                 'type' => 'hostname',
                 'options' => array(
-                    'route' => 'subdomain.:domain.:tld',
+                    'route' => ':subdomain.:domain.:tld',
                     'defaults' => array(
                         'controller' => 'Legacy\Controller\Legacy',
                         'action' => 'index'
