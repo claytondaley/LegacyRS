@@ -24,7 +24,7 @@ return array(
         'initializers' => array (
             function ($instance, $sm) {
                 if ($instance instanceof \LegacyRS\Controller\LegacyRSController) {
-                    $instance->add_analytics_server($sm->get('DaleyPiwik\Service\PhpTracker'));
+                    $instance->addServerSideAnalytics($sm->getServiceLocator()->get('DaleyPiwik\Service\PhpTracker'));
                 }
             }
         )
