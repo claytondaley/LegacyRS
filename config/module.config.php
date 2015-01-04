@@ -20,13 +20,14 @@ return array(
     'controllers' => array(
         'invokables' => array(
             'LegacyRS\Controller\LegacyRS' => 'LegacyRS\Controller\LegacyRSController',
+            'LegacyRS\Event\LoginListener' => 'LegacyRS\Event\LoginListener',
         ),
         'initializers' => array (
             function ($instance, $sm) {
                 if ($instance instanceof \LegacyRS\Controller\LegacyRSController) {
                     $instance->addServerSideAnalytics($sm->getServiceLocator()->get('DaleyPiwik\Service\PhpTracker'));
                 }
-            }
+            },
         )
     ),
     'router' => array(
@@ -54,5 +55,14 @@ return array(
                 )
             )
         )
-    )
+    ),
+    'doctrine' => array(
+        'configuration' => array(
+            'orm_default' => array(
+                'types' => array(
+                    'timestamp' => 'LegacyRS/Type/TimestampType',
+                )
+            )
+        )
+    ),
 );

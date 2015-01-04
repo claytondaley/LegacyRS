@@ -9,8 +9,20 @@
 
 namespace LegacyRS;
 
+use Zend\Mvc\MvcEvent;
+
 class Module
 {
+    /*
+    public function onBootstrap(MvcEvent $event)
+    {
+        // Attach Login Helper to ZfcUser Event 'authenticate'
+        $eventManager       = $event->getApplication()->getEventManager();
+        // $sharedEventManager = $eventManager->getSharedManager();
+        $eventManager->attachAggregate('LegacyRS/Event/LoginListener', -100);
+    }
+    */
+
     public function getAutoloaderConfig()
     {
         return array(

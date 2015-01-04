@@ -4,6 +4,7 @@ namespace LegacyRS\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Zend\Form\Annotation as Form;
+use ZfcUser\Entity\UserInterface;
 
 /**
  * User
@@ -13,12 +14,12 @@ use Zend\Form\Annotation as Form;
  *
  * @Form\Name("user")
  */
-class User
+class User implements UserInterface
 {
     /**
      * @var integer
      *
-     * @ORM\Column(name="ref", type="integer", nullable=false)
+     * @ORM\Column(name="ref", type="integer", length=11, nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      *
@@ -45,7 +46,7 @@ class User
      *
      * @ORM\Column(name="fullname", type="string", length=100, nullable=true)
      */
-    private $fullname;
+    private $display_name;
 
     /**
      * @var string
@@ -57,7 +58,7 @@ class User
     /**
      * @var integer
      *
-     * @ORM\Column(name="usergroup", type="integer", nullable=true)
+     * @ORM\Column(name="usergroup", type="integer", length=11, nullable=true)
      *
      * @Form\Type("Zend\Form\Element\Email")
      * @Form\Options({"label":"Email:"})
@@ -65,18 +66,18 @@ class User
     private $usergroup;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="last_active", type="datetime", nullable=true)
      *
      * @Form\Exclude()
      */
-    private $lastActive;
+    private $lastActive = null;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="logged_in", type="integer", nullable=true)
+     * @ORM\Column(name="logged_in", type="integer", length=11, nullable=true)
      *
      * @Form\Exclude()
      */
@@ -103,7 +104,7 @@ class User
     /**
      * @var integer
      *
-     * @ORM\Column(name="current_collection", type="integer", nullable=true)
+     * @ORM\Column(name="current_collection", type="integer", length=11, nullable=true)
      *
      * @Form\Exclude()
      */
@@ -112,18 +113,18 @@ class User
     /**
      * @var integer
      *
-     * @ORM\Column(name="accepted_terms", type="integer", nullable=true)
+     * @ORM\Column(name="accepted_terms", type="integer", length=11, nullable=true)
      *
      * @Form\Exclude()
      */
     private $acceptedTerms = '0';
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="account_expires", type="datetime", nullable=true)
      */
-    private $accountExpires;
+    private $accountExpires = null;
 
     /**
      * @var string
@@ -149,40 +150,40 @@ class User
     private $ipRestrict;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="password_last_change", type="datetime", nullable=true)
      *
      * @Form\Exclude()
      */
-    private $passwordLastChange;
+    private $passwordLastChange = null;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="login_tries", type="integer", nullable=true)
+     * @ORM\Column(name="login_tries", type="integer", length=11, nullable=true)
      *
      * @Form\Exclude()
      */
     private $loginTries = '0';
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="login_last_try", type="datetime", nullable=true)
      *
      * @Form\Exclude()
      */
-    private $loginLastTry;
+    private $loginLastTry = null;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="approved", type="integer", nullable=true)
+     * @ORM\Column(name="approved", type="integer", length=11, nullable=true)
      *
      * @Form\Exclude()
      */
-    private $approved = '1';
+    private $state = true;
 
     /**
      * @var string
@@ -194,13 +195,13 @@ class User
     private $lang;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="created", type="datetime", nullable=false)
      *
      * @Form\Exclude()
      */
-    private $created = 'CURRENT_TIMESTAMP';
+    private $created;
 
     /**
      * @var string
@@ -211,7 +212,12 @@ class User
      */
     private $hiddenCollections;
 
-
+    /**
+     * Set defaults requiring complex objects
+     */
+    public function __construct() {
+        $this->created = new \DateTime("now");
+    }
 
     /**
      * Get id
@@ -221,6 +227,17 @@ class User
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Set id.
+     *
+     * @param int $id
+     * @return UserInterface
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
     }
 
     /**
@@ -272,12 +289,12 @@ class User
     /**
      * Set fullname
      *
-     * @param string $fullname
+     * @param string $display_name
      * @return User
      */
-    public function setFullname($fullname)
+    public function setDisplayName($display_name)
     {
-        $this->fullname = $fullname;
+        $this->display_name = $display_name;
 
         return $this;
     }
@@ -287,9 +304,9 @@ class User
      *
      * @return string 
      */
-    public function getFullname()
+    public function getDisplayName()
     {
-        return $this->fullname;
+        return $this->display_name;
     }
 
     /**
@@ -341,7 +358,7 @@ class User
     /**
      * Set lastActive
      *
-     * @param \DateTime $lastActive
+     * @param DateTime $lastActive
      * @return User
      */
     public function setLastActive($lastActive)
@@ -354,7 +371,7 @@ class User
     /**
      * Get lastActive
      *
-     * @return \DateTime 
+     * @return DateTime
      */
     public function getLastActive()
     {
@@ -479,7 +496,7 @@ class User
     /**
      * Set accountExpires
      *
-     * @param \DateTime $accountExpires
+     * @param DateTime $accountExpires
      * @return User
      */
     public function setAccountExpires($accountExpires)
@@ -492,7 +509,7 @@ class User
     /**
      * Get accountExpires
      *
-     * @return \DateTime 
+     * @return DateTime
      */
     public function getAccountExpires()
     {
@@ -571,7 +588,7 @@ class User
     /**
      * Set passwordLastChange
      *
-     * @param \DateTime $passwordLastChange
+     * @param DateTime $passwordLastChange
      * @return User
      */
     public function setPasswordLastChange($passwordLastChange)
@@ -584,7 +601,7 @@ class User
     /**
      * Get passwordLastChange
      *
-     * @return \DateTime 
+     * @return DateTime
      */
     public function getPasswordLastChange()
     {
@@ -617,7 +634,7 @@ class User
     /**
      * Set loginLastTry
      *
-     * @param \DateTime $loginLastTry
+     * @param DateTime $loginLastTry
      * @return User
      */
     public function setLoginLastTry($loginLastTry)
@@ -630,7 +647,7 @@ class User
     /**
      * Get loginLastTry
      *
-     * @return \DateTime 
+     * @return DateTime
      */
     public function getLoginLastTry()
     {
@@ -640,12 +657,12 @@ class User
     /**
      * Set approved
      *
-     * @param integer $approved
+     * @param integer $state
      * @return User
      */
-    public function setApproved($approved)
+    public function setState($state)
     {
-        $this->approved = $approved;
+        $this->state = $state;
 
         return $this;
     }
@@ -655,9 +672,9 @@ class User
      *
      * @return integer 
      */
-    public function getApproved()
+    public function getState()
     {
-        return $this->approved;
+        return $this->state;
     }
 
     /**
@@ -686,7 +703,7 @@ class User
     /**
      * Set created
      *
-     * @param \DateTime $created
+     * @param DateTime $created
      * @return User
      */
     public function setCreated($created)
@@ -699,7 +716,7 @@ class User
     /**
      * Get created
      *
-     * @return \DateTime 
+     * @return DateTime
      */
     public function getCreated()
     {
@@ -728,4 +745,5 @@ class User
     {
         return $this->hiddenCollections;
     }
+
 }
