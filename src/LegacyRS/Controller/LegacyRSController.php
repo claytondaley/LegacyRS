@@ -22,11 +22,12 @@ use Zend\Http\Response;
 use Zend\Mvc\Controller\AbstractActionController;
 use DaleyPiwik\Contract\InjectServerSideAnalytics;
 use DaleyPiwik\Contract\InjectServerSideAnalyticsTrait;
+use Zend\ServiceManager\ServiceLocatorAwareInterface;
 
 class LegacyRSController extends AbstractActionController
-    implements InjectServerSideAnalytics
+    implements InjectServerSideAnalytics, ServiceLocatorAwareInterface
 {
-    /*
+    /**
      * Default implementation for InjectServerAnalytics interface
      */
     use InjectServerSideAnalyticsTrait;
@@ -34,6 +35,47 @@ class LegacyRSController extends AbstractActionController
     # Flag to prevent exit() operation from running during regular shutdown
     public $cleanShutdown = false;
 
+    /**
+     * Quick and dirty way to redirect users to a login screen.
+     */
+    public function unauthorizedAction()
+    {
+        return $this->redirect()->toRoute(
+            'zfcuser/login',
+            Array(),
+            Array(
+                'query' => array(
+                    'redirect' => $this->getRequest()->getUri()->getPath(),
+                )
+            )
+        );
+    }
+
+    /**
+     * Legacy users a query string to distinguish between a logout and login.  ZF2 doesn't like routing by query string
+     * so this action has been added to check and correctly route the hijacked (legacy) calls.
+     */
+    public function loginAction()
+    {
+        if ($this->getRequest()->getQuery()->logout == "true") {
+            $params = Array (
+                'action' => 'logout',
+                'controller' => 'zfcuser',
+            );
+        } else {
+            $params = Array (
+                'action' => 'login',
+                'controller' => 'zfcuser',
+            );
+        }
+        return $this->forward()->dispatch($params['controller'], array('action' => $params['action']));
+    }
+
+    /**
+     * Standard action used to load a legacy page.
+     *
+     * @return \Zend\Stdlib\ResponseInterface
+     */
     public function indexAction()
     {
         $request  = $this->getRequest();
@@ -60,6 +102,7 @@ class LegacyRSController extends AbstractActionController
                 # PreTracking supports scripts which use exit() or something else that breaks standard tracking
                 # $this->doPreTracking();
 
+                $this->storeLoginCookie($request);
                 $output = $this->runScript($page);
 
                 # Track pages
@@ -76,6 +119,30 @@ class LegacyRSController extends AbstractActionController
             $response->setStatusCode(Response::STATUS_CODE_404);
             $this->cleanShutdown = true;
             return $response;
+        }
+    }
+
+    /**
+     * By this point, we assume that ZfcUser has done its job to authenticate the user.  This function exposes that
+     * logged-in state to the legacy system by placing the cookie inside the database.
+     *
+     * @param \Zend\Stdlib\RequestInterface $request
+     */
+    private function storeLoginCookie($request)
+    {
+        # get token stored in cookie
+        $token = $request->getCookie()->user;
+
+        # persisting is slow so only do it if the tokens don't match
+        if ($this->zfcUserAuthentication()->getIdentity()->getSession() != $token) {
+            # store token in datatbase
+            $objectManager = $this
+                ->getServiceLocator()
+                ->get('Doctrine\ORM\EntityManager');
+            $user = $objectManager->find('LegacyRS\Entity\User', $this->zfcUserAuthentication()->getIdentity()->getId());
+            $user->setSession($token);
+            $objectManager->persist($user);
+            $objectManager->flush();
         }
     }
 

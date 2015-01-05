@@ -13,15 +13,14 @@ use Zend\Mvc\MvcEvent;
 
 class Module
 {
-    /*
-    public function onBootstrap(MvcEvent $event)
+
+    public function onBootstrap(MvcEvent $e)
     {
         // Attach Login Helper to ZfcUser Event 'authenticate'
-        $eventManager       = $event->getApplication()->getEventManager();
-        // $sharedEventManager = $eventManager->getSharedManager();
-        $eventManager->attachAggregate('LegacyRS/Event/LoginListener', -100);
+        $sm = $e->getApplication()->getServiceManager();
+        $zfcAuthEvents = $e->getApplication()->getEventManager()->getSharedManager();
+        $sm->get('LegacyRS\Event\ZfcUserListener')->attachShared($zfcAuthEvents);
     }
-    */
 
     public function getAutoloaderConfig()
     {

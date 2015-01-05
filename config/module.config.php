@@ -20,7 +20,6 @@ return array(
     'controllers' => array(
         'invokables' => array(
             'LegacyRS\Controller\LegacyRS' => 'LegacyRS\Controller\LegacyRSController',
-            'LegacyRS\Event\LoginListener' => 'LegacyRS\Event\LoginListener',
         ),
         'initializers' => array (
             function ($instance, $sm) {
@@ -30,31 +29,65 @@ return array(
             },
         )
     ),
+    'service_manager' => array(
+        'invokables' => array(
+            'LegacyRS\Event\ZfcUserListener' => 'LegacyRS\Event\ZfcUserListener',
+        ),
+    ),
     'router' => array(
         'routes' => array(
-            'home' => array(
-                'type' => 'Zend\Mvc\Router\Http\Literal',
-                'options' => array(
-                    'route'    => '/application',
-                    'defaults' => array(
-                        '__NAMESPACE__' => 'LegacyRS\Controller',
-                        'controller'    => 'LegacyRS',
-                        'action'     => 'index',
-                    ),
-                ),
-            ),
+            # Catchall to make sure legacy pages all get routed to the controller
             'wildcard' => array(
-                'type' => 'hostname',
+                'type' => 'Hostname',
+                'may_terminate' => true,
                 'options' => array(
                     'route' => ':subdomain.:domain.:tld',
                     'defaults' => array(
                         '__NAMESPACE__' => 'LegacyRS\Controller',
                         'controller'    => 'LegacyRS',
                         'action'        => 'index'
-                    )
+                    ),
+                ),
+            ),
+            'legacyrs' => array(
+                'type' => 'Literal',
+                'options' => array(
+                    'route'    => '/',
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'LegacyRS\Controller',
+                        'controller'    => 'LegacyRS',
+                        'action'     => 'index',
+                    ),
+                ),
+                'may_terminate' => true,
+                'child_routes' => array (
+                    'home' => array(
+                        'type' => 'Literal',
+                        'options' => array(
+                            'route'    => 'application',
+                            'defaults' => array(
+                                '__NAMESPACE__' => 'LegacyRS\Controller',
+                                'controller'    => 'LegacyRS',
+                                'action'     => 'index',
+                            ),
+                        ),
+                    ),
+                    # Hijack login (and logout by query string) route and redirect to authentication providers
+                    'hijack-login' => array(
+                        'type' => 'Literal',
+                        'may_terminate' => true,
+                        'options' => array(
+                            'route' => 'login.php',
+                            'defaults' => array(
+                                '__NAMESPACE__' => 'LegacyRS\Controller',
+                                'controller'    => 'LegacyRS',
+                                'action'        => 'login'
+                            ),
+                        ),
+                    ),
                 )
-            )
-        )
+            ),
+        ),
     ),
     'doctrine' => array(
         'configuration' => array(
