@@ -18,36 +18,31 @@
 
 namespace LegacyRS\Controller;
 
+use DaleyPiwik\Contract\ServerSideAnalyticsInterface;
 use Zend\Http\Response;
 use Zend\Mvc\Controller\AbstractActionController;
-use DaleyPiwik\Contract\InjectServerSideAnalytics;
-use DaleyPiwik\Contract\InjectServerSideAnalyticsTrait;
+use DaleyPiwik\Contract\InjectServerSideAnalyticsInterfaceTrait;
+use DaleyPiwik\Contract\ServerSideAnalyticsUserInterface;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 
 class LegacyRSController extends AbstractActionController
-    implements InjectServerSideAnalytics, ServiceLocatorAwareInterface
+    implements ServerSideAnalyticsUserInterface, ServiceLocatorAwareInterface
 {
     /**
-     * Default implementation for InjectServerAnalytics interface
+     * Default implementation for ServerAnalyticsUser interface
      */
-    use InjectServerSideAnalyticsTrait;
+    use ServerSideAnalyticsUserTrait;
 
     # Flag to prevent exit() operation from running during regular shutdown
     public $cleanShutdown = false;
 
     /**
-     * Quick and dirty way to redirect users to a login screen.
+     * Quick and dirty way to redirect unauthroized users to a login screen.
      */
     public function unauthorizedAction()
     {
         return $this->redirect()->toRoute(
-            'zfcuser/login',
-            Array(),
-            Array(
-                'query' => array(
-                    'redirect' => $this->getRequest()->getUri()->getPath(),
-                )
-            )
+            'zfcuser/login',Array(),Array('query' => array('redirect' => $this->getRequest()->getUri()->getPath()))
         );
     }
 
@@ -124,7 +119,7 @@ class LegacyRSController extends AbstractActionController
 
     /**
      * By this point, we assume that ZfcUser has done its job to authenticate the user.  This function exposes that
-     * logged-in state to the legacy system by placing the cookie inside the database.
+     * logged-in state to the legacy system by placing the value of the `user` cookie inside the database.
      *
      * @param \Zend\Stdlib\RequestInterface $request
      */
