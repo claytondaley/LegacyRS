@@ -2,8 +2,10 @@
 
 namespace LegacyRS\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Zend\Form\Annotation as Form;
+use ZfcRbac\Identity\IdentityInterface;
 use ZfcUser\Entity\UserInterface;
 
 /**
@@ -11,204 +13,128 @@ use ZfcUser\Entity\UserInterface;
  *
  * @ORM\Table(name="user", indexes={@ORM\Index(name="session", columns={"session"})})
  * @ORM\Entity
- *
- * @Form\Name("user")
  */
-class User implements UserInterface
+class User
+    implements UserInterface, IdentityInterface
 {
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="ref", type="integer", length=11, nullable=false)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     *
-     * @Form\Exclude()
-     */
-    private $id;
+    static $stateNames = array('Disabled', 'Enabled');
 
     /**
-     * @var string
-     *
+     * @ORM\Id
+     * @ORM\Column(name="ref", type="integer", length=11, nullable=false)
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    protected $id;
+
+    /**
      * @ORM\Column(name="username", type="string", length=50, nullable=true)
      */
-    private $username;
+    protected $username;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="password", type="string", length=128, nullable=true)
+     * @ORM\Column(name="password", type="string", length=128, nullable=false)
      */
-    private $password;
+    protected $password;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="fullname", type="string", length=100, nullable=true)
      */
-    private $display_name;
+    protected $displayName;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="email", type="string", length=100, nullable=true)
+     * @ORM\Column(name="email", type="string", length=100, nullable=false)
      */
-    private $email;
+    protected $email;
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="usergroup", type="integer", length=11, nullable=true)
-     *
-     * @Form\Type("Zend\Form\Element\Email")
-     * @Form\Options({"label":"Email:"})
+     * @ORM\ManyToOne(targetEntity="Usergroup")
+     * @ORM\JoinColumn(name="usergroup", referencedColumnName="ref")
      */
     private $usergroup;
 
     /**
-     * @var DateTime
-     *
      * @ORM\Column(name="last_active", type="datetime", nullable=true)
-     *
-     * @Form\Exclude()
      */
     private $lastActive = null;
 
     /**
-     * @var integer
-     *
      * @ORM\Column(name="logged_in", type="integer", length=11, nullable=true)
-     *
-     * @Form\Exclude()
      */
     private $loggedIn;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="last_browser", type="text", nullable=true)
-     *
-     * @Form\Exclude()
      */
     private $lastBrowser;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="last_ip", type="string", length=100, nullable=true)
-     *
-     * @Form\Exclude()
      */
     private $lastIp;
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="current_collection", type="integer", length=11, nullable=true)
-     *
-     * @Form\Exclude()
+     * @ORM\ManyToOne(targetEntity="Collection")
+     * @ORM\JoinColumn(name="current_collection", referencedColumnName="ref", nullable=true)
      */
     private $currentCollection;
 
     /**
-     * @var integer
-     *
      * @ORM\Column(name="accepted_terms", type="integer", length=11, nullable=true)
-     *
-     * @Form\Exclude()
      */
     private $acceptedTerms = '0';
 
     /**
-     * @var DateTime
-     *
      * @ORM\Column(name="account_expires", type="datetime", nullable=true)
      */
     private $accountExpires = null;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="comments", type="text", nullable=true)
      */
     private $comments;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="session", type="string", length=50, nullable=true)
-     *
-     * @Form\Exclude()
      */
     private $session;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="ip_restrict", type="text", nullable=true)
      */
     private $ipRestrict;
 
     /**
-     * @var DateTime
-     *
      * @ORM\Column(name="password_last_change", type="datetime", nullable=true)
-     *
-     * @Form\Exclude()
      */
     private $passwordLastChange = null;
 
     /**
-     * @var integer
-     *
      * @ORM\Column(name="login_tries", type="integer", length=11, nullable=true)
-     *
-     * @Form\Exclude()
      */
     private $loginTries = '0';
 
     /**
-     * @var DateTime
-     *
      * @ORM\Column(name="login_last_try", type="datetime", nullable=true)
-     *
-     * @Form\Exclude()
      */
     private $loginLastTry = null;
 
     /**
-     * @var integer
-     *
      * @ORM\Column(name="approved", type="integer", length=11, nullable=true)
-     *
-     * @Form\Exclude()
      */
-    private $state = true;
+    protected $state = true;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="lang", type="string", length=11, nullable=true)
-     *
-     * @Form\Exclude()
      */
     private $lang;
 
     /**
-     * @var DateTime
-     *
      * @ORM\Column(name="created", type="datetime", nullable=false)
-     *
-     * @Form\Exclude()
      */
     private $created;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="hidden_collections", type="text", nullable=true)
-     *
-     * @Form\Exclude()
      */
     private $hiddenCollections;
 
@@ -216,13 +142,13 @@ class User implements UserInterface
      * Set defaults requiring complex objects
      */
     public function __construct() {
-        $this->created = new \DateTime("now");
+        $this->created = new DateTime("now");
     }
 
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -256,7 +182,7 @@ class User implements UserInterface
     /**
      * Get username
      *
-     * @return string 
+     * @return string
      */
     public function getUsername()
     {
@@ -279,7 +205,7 @@ class User implements UserInterface
     /**
      * Get password
      *
-     * @return string 
+     * @return string
      */
     public function getPassword()
     {
@@ -289,12 +215,12 @@ class User implements UserInterface
     /**
      * Set fullname
      *
-     * @param string $display_name
+     * @param string $displayName
      * @return User
      */
-    public function setDisplayName($display_name)
+    public function setDisplayName($displayName)
     {
-        $this->display_name = $display_name;
+        $this->displayName = $displayName;
 
         return $this;
     }
@@ -302,11 +228,11 @@ class User implements UserInterface
     /**
      * Get fullname
      *
-     * @return string 
+     * @return string
      */
     public function getDisplayName()
     {
-        return $this->display_name;
+        return $this->displayName;
     }
 
     /**
@@ -325,7 +251,7 @@ class User implements UserInterface
     /**
      * Get email
      *
-     * @return string 
+     * @return string
      */
     public function getEmail()
     {
@@ -335,10 +261,10 @@ class User implements UserInterface
     /**
      * Set usergroup
      *
-     * @param integer $usergroup
+     * @param Usergroup $usergroup
      * @return User
      */
-    public function setUsergroup($usergroup)
+    public function setUsergroup(Usergroup $usergroup)
     {
         $this->usergroup = $usergroup;
 
@@ -348,7 +274,7 @@ class User implements UserInterface
     /**
      * Get usergroup
      *
-     * @return integer 
+     * @return integer
      */
     public function getUsergroup()
     {
@@ -361,9 +287,9 @@ class User implements UserInterface
      * @param DateTime $lastActive
      * @return User
      */
-    public function setLastActive($lastActive)
+    public function setLastActive(DateTime $lastActive)
     {
-        $this->lastActive = $lastActive;
+        $this->lastActive = $lastActive ? clone $lastActive : null;
 
         return $this;
     }
@@ -375,7 +301,7 @@ class User implements UserInterface
      */
     public function getLastActive()
     {
-        return $this->lastActive;
+        return $this->lastActive ? clone $this->lastActive : null;
     }
 
     /**
@@ -394,7 +320,7 @@ class User implements UserInterface
     /**
      * Get loggedIn
      *
-     * @return integer 
+     * @return integer
      */
     public function getLoggedIn()
     {
@@ -417,7 +343,7 @@ class User implements UserInterface
     /**
      * Get lastBrowser
      *
-     * @return string 
+     * @return string
      */
     public function getLastBrowser()
     {
@@ -440,7 +366,7 @@ class User implements UserInterface
     /**
      * Get lastIp
      *
-     * @return string 
+     * @return string
      */
     public function getLastIp()
     {
@@ -450,10 +376,10 @@ class User implements UserInterface
     /**
      * Set currentCollection
      *
-     * @param integer $currentCollection
+     * @param Collection $currentCollection
      * @return User
      */
-    public function setCurrentCollection($currentCollection)
+    public function setCurrentCollection(Collection $currentCollection)
     {
         $this->currentCollection = $currentCollection;
 
@@ -463,7 +389,7 @@ class User implements UserInterface
     /**
      * Get currentCollection
      *
-     * @return integer 
+     * @return integer
      */
     public function getCurrentCollection()
     {
@@ -486,7 +412,7 @@ class User implements UserInterface
     /**
      * Get acceptedTerms
      *
-     * @return integer 
+     * @return integer
      */
     public function getAcceptedTerms()
     {
@@ -501,7 +427,7 @@ class User implements UserInterface
      */
     public function setAccountExpires($accountExpires)
     {
-        $this->accountExpires = $accountExpires;
+        $this->accountExpires = clone $accountExpires;
 
         return $this;
     }
@@ -513,7 +439,7 @@ class User implements UserInterface
      */
     public function getAccountExpires()
     {
-        return $this->accountExpires;
+        return $this->accountExpires ? clone $this->accountExpires : null;
     }
 
     /**
@@ -532,7 +458,7 @@ class User implements UserInterface
     /**
      * Get comments
      *
-     * @return string 
+     * @return string
      */
     public function getComments()
     {
@@ -555,7 +481,7 @@ class User implements UserInterface
     /**
      * Get session
      *
-     * @return string 
+     * @return string
      */
     public function getSession()
     {
@@ -578,7 +504,7 @@ class User implements UserInterface
     /**
      * Get ipRestrict
      *
-     * @return string 
+     * @return string
      */
     public function getIpRestrict()
     {
@@ -591,9 +517,9 @@ class User implements UserInterface
      * @param DateTime $passwordLastChange
      * @return User
      */
-    public function setPasswordLastChange($passwordLastChange)
+    public function setPasswordLastChange(DateTime $passwordLastChange)
     {
-        $this->passwordLastChange = $passwordLastChange;
+        $this->passwordLastChange = $passwordLastChange ? clone $passwordLastChange : null;
 
         return $this;
     }
@@ -605,7 +531,7 @@ class User implements UserInterface
      */
     public function getPasswordLastChange()
     {
-        return $this->passwordLastChange;
+        return $this->passwordLastChange ? clone $this->passwordLastChange : null;
     }
 
     /**
@@ -624,7 +550,7 @@ class User implements UserInterface
     /**
      * Get loginTries
      *
-     * @return integer 
+     * @return integer
      */
     public function getLoginTries()
     {
@@ -637,9 +563,9 @@ class User implements UserInterface
      * @param DateTime $loginLastTry
      * @return User
      */
-    public function setLoginLastTry($loginLastTry)
+    public function setLoginLastTry(DateTime $loginLastTry)
     {
-        $this->loginLastTry = $loginLastTry;
+        $this->loginLastTry = $loginLastTry ? clone $loginLastTry : null;
 
         return $this;
     }
@@ -651,7 +577,7 @@ class User implements UserInterface
      */
     public function getLoginLastTry()
     {
-        return $this->loginLastTry;
+        return $this->loginLastTry ? clone $this->loginLastTry : null;
     }
 
     /**
@@ -670,7 +596,7 @@ class User implements UserInterface
     /**
      * Get approved
      *
-     * @return integer 
+     * @return integer
      */
     public function getState()
     {
@@ -693,7 +619,7 @@ class User implements UserInterface
     /**
      * Get lang
      *
-     * @return string 
+     * @return string
      */
     public function getLang()
     {
@@ -706,9 +632,9 @@ class User implements UserInterface
      * @param DateTime $created
      * @return User
      */
-    public function setCreated($created)
+    public function setCreated(DateTime $created)
     {
-        $this->created = $created;
+        $this->created = $created ? clone $created : null;
 
         return $this;
     }
@@ -720,7 +646,7 @@ class User implements UserInterface
      */
     public function getCreated()
     {
-        return $this->created;
+        return $this->created ? clone $this->created : null;
     }
 
     /**
@@ -739,11 +665,20 @@ class User implements UserInterface
     /**
      * Get hiddenCollections
      *
-     * @return string 
+     * @return string
      */
     public function getHiddenCollections()
     {
         return $this->hiddenCollections;
     }
 
+    /**
+     * Get the list of roles of this identity
+     *
+     * @return string[]|\Rbac\Role\RoleInterface[]
+     */
+    public function getRoles()
+    {
+        return array($this->getUsergroup());
+    }
 }

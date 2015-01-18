@@ -15,8 +15,8 @@ class Collection
     /**
      * @var integer
      *
-     * @ORM\Column(name="ref", type="integer", nullable=false)
      * @ORM\Id
+     * @ORM\Column(name="ref", type="integer", length=11, nullable=false)
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;

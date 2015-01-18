@@ -16,10 +16,16 @@ class Module
 
     public function onBootstrap(MvcEvent $e)
     {
-        // Attach Login Helper to ZfcUser Event 'authenticate'
+        // Integrate ZfcUser into legacy code by linking to Events
         $sm = $e->getApplication()->getServiceManager();
-        $zfcAuthEvents = $e->getApplication()->getEventManager()->getSharedManager();
-        $sm->get('LegacyRS\Event\ZfcUserListener')->attachShared($zfcAuthEvents);
+        $sharedEvents = $e->getApplication()->getEventManager()->getSharedManager();
+        $sm->get('LegacyRS\Integration\ZfcUserListener')->attachShared($sharedEvents);
+
+        // Attach ZfcRbac redirect strategy
+        $t = $e->getTarget();
+        $t->getEventManager()->attach(
+            $t->getServiceManager()->get('ZfcRbac\View\Strategy\RedirectStrategy')
+        );
     }
 
     public function getAutoloaderConfig()

@@ -6,7 +6,7 @@
  * Time: 5:28 PM
  */
 
-namespace LegacyRS\Event;
+namespace LegacyRS\Integration;
 
 use Zend\EventManager\SharedEventManagerInterface;
 use Zend\EventManager\SharedListenerAggregateInterface;
@@ -30,7 +30,6 @@ class ZfcUserListener implements SharedListenerAggregateInterface
     {
         $this->listeners[] = $sharedManager->attach('ZfcUser\Authentication\Adapter\AdapterChain', 'authenticate.success', array($this, 'setupSession'));
         $this->listeners[] = $sharedManager->attach('ZfcUser\Service\User', 'register', array($this, 'initializeRsUser'));
-        $this->listeners[] = $sharedManager->attach('LegacyRS\Controller\LegacyRSController', MvcEvent::EVENT_DISPATCH, array($this, 'checkAuth'), 10);
     }
 
     /**
@@ -110,12 +109,4 @@ class ZfcUserListener implements SharedListenerAggregateInterface
 
         }
     }
-
-    public function checkAuth(\Zend\Mvc\MvcEvent $event)
-    {
-        if (!$event->getApplication()->getServiceManager()->get('zfcuser_auth_service')->hasIdentity()) {
-            $event->getRouteMatch()->setParam('action','unauthorized');
-        }
-    }
-
 }

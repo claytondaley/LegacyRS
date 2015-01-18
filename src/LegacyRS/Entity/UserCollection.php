@@ -37,8 +37,6 @@ class UserCollection
      */
     private $requestFeedback = '0';
 
-
-
     /**
      * Set user
      *

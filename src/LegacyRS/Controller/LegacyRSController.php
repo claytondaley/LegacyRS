@@ -38,31 +38,60 @@ class LegacyRSController extends AbstractActionController
     /**
      * Quick and dirty way to redirect unauthroized users to a login screen.
      */
-    public function unauthorizedAction()
+    public function redirectAction()
     {
+        // get new route from route parameter
+        $route = $this->params()->fromRoute('route');
+
+        // add redirect query if the route is login
+        $query = array();
+        if ($route == 'zfcuser/login') {
+            $query['redirect'] = $this->getRequest()->getUri();
+        }
+
+        // move username from ref to userId if route is user (admin) edit
+        $params = array();
+        if ($route == 'zfcadmin/zfcuseradmin/edit') {
+            $params['userId'] = $this->params()->fromQuery('ref');
+        }
+
+        // respond with redirect
         return $this->redirect()->toRoute(
-            'zfcuser/login',Array(),Array('query' => array('redirect' => $this->getRequest()->getUri()->getPath()))
+            $route,
+            $params,
+            array( #options
+                'query' => $query
+            )
         );
     }
 
     /**
      * Legacy users a query string to distinguish between a logout and login.  ZF2 doesn't like routing by query string
      * so this action has been added to check and correctly route the hijacked (legacy) calls.
+     *
+     * @param bool $logout
+     * @return Response
      */
-    public function loginAction()
+    public function loginAction($logout = false)
     {
-        if ($this->getRequest()->getQuery()->logout == "true") {
-            $params = Array (
-                'action' => 'logout',
-                'controller' => 'zfcuser',
-            );
+        if ($logout or $this->params()->fromQuery('logout') == "true") {
+            $route = 'zfcuser/logout';
         } else {
-            $params = Array (
-                'action' => 'login',
-                'controller' => 'zfcuser',
-            );
+            $route = 'zfcuser/login';
         }
-        return $this->forward()->dispatch($params['controller'], array('action' => $params['action']));
+
+        // add redirect query if the route is login
+        $query = Array();
+        if ($route == 'zfcuser/login' and $this->params()->fromQuery('redirect')) {
+            $query['redirect'] = $this->params()->fromQuery('redirect');
+        }
+
+        // respond with redirect
+        return $this->redirect()->toRoute(
+            $route,
+            Array(),
+            Array('query' => $query)
+        );
     }
 
     /**
@@ -74,6 +103,11 @@ class LegacyRSController extends AbstractActionController
     {
         $request  = $this->getRequest();
         $response = $this->getResponse();
+
+        # Check for auth cookie and redirect to logout if it doesn't exist
+        if (!$request->getCookie()->user) {
+            return $this->loginAction(true);
+        }
 
         # Get page
         $page = ltrim( $request->getUri()->getPath(), '/' );
@@ -96,7 +130,10 @@ class LegacyRSController extends AbstractActionController
                 # PreTracking supports scripts which use exit() or something else that breaks standard tracking
                 # $this->doPreTracking();
 
-                $this->storeLoginCookie($request);
+                # If a token is present, put it in the database
+                # Otherwise, redirect to logout (login will reestablish cookie)
+                $this->storeLoginCookie($request->getCookie()->user);
+
                 $output = $this->runScript($page);
 
                 # Track pages
@@ -119,14 +156,9 @@ class LegacyRSController extends AbstractActionController
     /**
      * By this point, we assume that ZfcUser has done its job to authenticate the user.  This function exposes that
      * logged-in state to the legacy system by placing the value of the `user` cookie inside the database.
-     *
-     * @param \Zend\Stdlib\RequestInterface $request
      */
-    private function storeLoginCookie($request)
+    private function storeLoginCookie($token)
     {
-        # get token stored in cookie
-        $token = $request->getCookie()->user;
-
         # persisting is slow so only do it if the tokens don't match
         if ($this->zfcUserAuthentication()->getIdentity()->getSession() != $token) {
             # store token in datatbase

@@ -3,6 +3,7 @@
 namespace LegacyRS\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Rbac\Role\RoleInterface;
 
 /**
  * Usergroup
@@ -10,118 +11,102 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="usergroup")
  * @ORM\Entity
  */
-class Usergroup
+class Usergroup implements RoleInterface
 {
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="ref", type="integer", nullable=false)
      * @ORM\Id
+     * @ORM\Column(name="ref", type="integer", length=11, nullable=false)
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $ref;
+    private $id;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="name", type="string", length=100, nullable=true)
      */
     private $name;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="permissions", type="text", nullable=true)
+     * @ORM\Column(name="permissions", type="simple_array", nullable=true)
      */
-    private $permissions;
+    protected $permissions;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="fixed_theme", type="string", length=50, nullable=true)
+     * @ORM\Column(name="fixed_theme", type="string", nullable=true)
      */
     private $fixedTheme;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="parent", type="string", length=50, nullable=true)
      */
     private $parent;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="search_filter", type="text", nullable=true)
      */
     private $searchFilter;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="edit_filter", type="text", nullable=true)
      */
     private $editFilter;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="derestrict_filter", type="text", nullable=true)
      */
     private $derestrictFilter;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="ip_restrict", type="text", nullable=true)
      */
     private $ipRestrict;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="resource_defaults", type="text", nullable=true)
      */
     private $resourceDefaults;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="config_options", type="text", nullable=true)
      */
     private $configOptions;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="welcome_message", type="text", nullable=true)
      */
     private $welcomeMessage;
 
     /**
-     * @var integer
-     *
      * @ORM\Column(name="request_mode", type="integer", nullable=true)
      */
     private $requestMode = '0';
 
     /**
-     * @var integer
-     *
      * @ORM\Column(name="allow_registration_selection", type="integer", nullable=true)
      */
     private $allowRegistrationSelection = '0';
 
 
+    /**
+     * Set id
+     *
+     * @param $id
+     * @return $this
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
 
     /**
-     * Get ref
+     * Get id
      *
      * @return integer 
      */
-    public function getRef()
+    public function getId()
     {
-        return $this->ref;
+        return $this->id;
     }
 
     /**
@@ -421,5 +406,16 @@ class Usergroup
     public function getAllowRegistrationSelection()
     {
         return $this->allowRegistrationSelection;
+    }
+
+    /**
+     * Checks if a permission exists for this role (it does not check child roles)
+     *
+     * @param  mixed $permission
+     * @return bool
+     */
+    public function hasPermission($permission)
+    {
+        return in_array($permission, $this->permissions);
     }
 }
