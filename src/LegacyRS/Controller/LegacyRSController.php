@@ -18,11 +18,11 @@
 
 namespace LegacyRS\Controller;
 
-use DaleyPiwik\Contract\ServerSideAnalyticsInterface;
 use Zend\Http\Response;
 use Zend\Mvc\Controller\AbstractActionController;
-use DaleyPiwik\Contract\ServerSideAnalyticsUserInterface;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
+use DaleyPiwik\Contract\ServerSideAnalyticsUserInterface;
+use DaleyPiwik\Contract\ServerSideAnalyticsUserTrait;
 
 class LegacyRSController extends AbstractActionController
     implements ServerSideAnalyticsUserInterface, ServiceLocatorAwareInterface
