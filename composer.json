@@ -1,24 +1,41 @@
 {
-    "name": "claytondaley/legacyrs",
-    "description": "Integrate [ResourceSpace](http://www.resourcespace.org/) with a ZF2 application",
-    "type": "library",
-    "license": "GPL-3.0+",
-    "keywords": ["zf2", "resourcespace"],
-	"support": {
-        "issues": "https://github.com/claytondaley/LegacyRS/issues",
-        "source": "https://github.com/claytondaley/LegacyRS"
-    },
-    "homepage": "https://github.com/claytondaley/LegacyRS",
-    "require": {
-        "php": ">=5.3.3",
-        "zendframework/zendframework": "2.3.*",
-        "zendframework/zendservice-recaptcha": "dev-master",
-        "doctrine/common": ">=2.1",
-        "doctrine/doctrine-orm-module": "0.7.*",
-        "zf-commons/zfc-user": "1.x-dev",
-        "zf-commons/zfc-user-doctrine-orm": "dev-master",
-        "zf-commons/zfc-admin": "dev-master",
-        "zf-commons/zfc-rbac": "dev-master",
-        "danielss89/zfc-user-admin": "dev-master"
+  "name": "claytondaley/legacyrs",
+  "description": "Integrate [ResourceSpace](http://www.resourcespace.org/) with a ZF2 application",
+  "type": "library",
+  "license": "GPL-3.0+",
+  "keywords": ["zf2", "resourcespace", "dam", "mam"],
+  "support": {
+    "issues": "https://github.com/claytondaley/LegacyRS/issues",
+    "source": "https://github.com/claytondaley/LegacyRS"
+  },
+  "homepage": "https://github.com/claytondaley/LegacyRS",
+  "repositories": [
+    {
+      "type": "package",
+      "package": {
+        "name": "resourcespace/resourcespace",
+        "version": "master",
+        "source": {
+          "url": "git://github.com/svn2github/resourcespace",
+          "type": "git",
+          "reference": "master"
+        }
+      }
     }
+  ],
+  "require": {
+    "php": ">=5.3.3",
+    "zendframework/zendframework": "2.3.*",
+    "doctrine/common": ">=2.1",
+    "doctrine/doctrine-orm-module": "0.7.*",
+    "resourcespace/resourcespace": "master"
+  },
+  "autoload": {
+    "psr-0": {
+      "LegacyRS\\": "src/LegacyRS"
+    },
+    "classmap": [
+      "./Module.php"
+    ]
+  }
 }

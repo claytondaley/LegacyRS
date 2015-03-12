@@ -9,31 +9,12 @@
 
 namespace LegacyRS;
 
-use Zend\Mvc\MvcEvent;
-
 class Module
 {
-
-    public function onBootstrap(MvcEvent $e)
-    {
-        // Integrate ZfcUser into legacy code by linking to Events
-        $sm = $e->getApplication()->getServiceManager();
-        $sharedEvents = $e->getApplication()->getEventManager()->getSharedManager();
-        $sm->get('LegacyRS\Integration\ZfcUserListener')->attachShared($sharedEvents);
-
-        // Attach ZfcRbac redirect strategy
-        $t = $e->getTarget();
-        $t->getEventManager()->attach(
-            $t->getServiceManager()->get('ZfcRbac\View\Strategy\RedirectStrategy')
-        );
-    }
 
     public function getAutoloaderConfig()
     {
         return array(
-            'Zend\Loader\ClassMapAutoloader' => array(
-                __DIR__ . '/autoload_classmap.php',
-            ),
             'Zend\Loader\StandardAutoloader' => array(
                 'namespaces' => array(
                     __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
