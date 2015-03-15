@@ -45,11 +45,6 @@ class LegacyRSController extends AbstractActionController
         $request  = $this->getRequest();
         $response = $this->getResponse();
 
-        # Check for auth cookie and redirect to logout if it doesn't exist
-        if (!$request->getCookie()->user) {
-            return $this->loginAction(true);
-        }
-
         # Get page
         $page = ltrim( $request->getUri()->getPath(), '/' );
         # Defaulting to index.php
