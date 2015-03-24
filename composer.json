@@ -14,11 +14,11 @@
       "type": "package",
       "package": {
         "name": "resourcespace/resourcespace",
-        "version": "master",
+        "version": "6488",
         "source": {
-          "url": "git://github.com/svn2github/resourcespace",
-          "type": "git",
-          "reference": "master"
+          "type": "svn",
+          "url": "http://svn.montala.net/svn/",
+          "reference": "resourcespace@6488"
         }
       }
     }
@@ -28,7 +28,6 @@
     "zendframework/zendframework": ">2.3",
     "doctrine/common": ">=2.1",
     "doctrine/doctrine-orm-module": "0.7.*",
-    "resourcespace/resourcespace": "master"
   },
   "autoload": {
     "psr-0": {
