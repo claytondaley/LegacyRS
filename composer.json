@@ -1,7 +1,6 @@
 {
   "name": "claytondaley/legacyrs",
   "description": "Integrate [ResourceSpace](http://www.resourcespace.org/) with a ZF2 application",
-  "version": "6488",
   "type": "library",
   "license": "GPL-3.0+",
   "keywords": ["zf2", "resourcespace", "dam", "mam"],
