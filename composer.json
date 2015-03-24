@@ -1,6 +1,7 @@
 {
   "name": "claytondaley/legacyrs",
   "description": "Integrate [ResourceSpace](http://www.resourcespace.org/) with a ZF2 application",
+  "version": "6488",
   "type": "library",
   "license": "GPL-3.0+",
   "keywords": ["zf2", "resourcespace", "dam", "mam"],
@@ -28,6 +29,7 @@
     "zendframework/zendframework": ">2.3",
     "doctrine/common": ">=2.1",
     "doctrine/doctrine-orm-module": "0.7.*",
+    "resourcespace/resourcespace": "6488"
   },
   "autoload": {
     "psr-0": {
