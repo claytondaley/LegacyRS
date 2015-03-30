@@ -26,8 +26,6 @@
   "require": {
     "php": ">=5.3.3",
     "zendframework/zendframework": ">2.3",
-    "doctrine/common": ">=2.1",
-    "doctrine/doctrine-orm-module": "0.7.*",
     "resourcespace/resourcespace": "6488"
   },
   "autoload": {
