@@ -19,21 +19,104 @@
 return array(
     'controllers' => array(
         'invokables' => array(
-            'LegacyRS\Controller\LegacyRS' => 'LegacyRS\Controller\LegacyRSController',
+            'LegacyRS\Controller\LegacyRS'  => 'LegacyRS\Controller\LegacyRSController',
+            'LegacyRS\Router\QueryFilter'   => 'LegacyRS\Router\QueryFilter',
         ),
+        'factories' => array(
+            'LegacyRS\Controller\Redirect'  => 'LegacyRS\Factory\Controller\RedirectController',
+        )
     ),
     'router' => array(
         'routes' => array(
-            # Catchall to make sure legacy pages all get routed to the controller
+            # Catchall to make any legacy pages not hijacked are routed to the controller
             'legacyrs' => array(
-                'type' => 'Hostname',
-                'may_terminate' => true,
+                'type' => 'Segment',
                 'options' => array(
-                    'route' => ':subdomain.:domain.:tld',
+                    'route' => '[/][:path]',
+                    'constraints' => array(
+                        'path' => '.*',
+                    ),
                     'defaults' => array(
                         '__NAMESPACE__' => 'LegacyRS\Controller',
                         'controller'    => 'LegacyRS',
-                        'action'        => 'index'
+                        'action'        => 'legacy'
+                    ),
+                ),
+            ),
+            # Hijack login (and logout) route
+            'hijack-auth' => array(
+                'type' => 'Literal',
+                'options' => array(
+                    'route' => '/login.php',
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'LegacyRS\Controller',
+                        'controller'    => 'Redirect',
+                        'action'        => 'auth',
+                    ),
+                ),
+            ),
+            # Hijack user profile page
+            'hijack-user-profile' => array(
+                'type' => 'Literal',
+                'options' => array(
+                    'route' => '/pages/user_preferences.php',
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'LegacyRS\Controller',
+                        'controller'    => 'Redirect',
+                        'action'        => 'default',
+                        'name'          => 'userProfile',
+                    ),
+                ),
+            ),
+            # Hijack user admin list page
+            'hijack-admin-user-list' => array(
+                'type' => 'Literal',
+                'options' => array(
+                    'route' => '/pages/team/team_user.php',
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'LegacyRS\Controller',
+                        'controller'    => 'Redirect',
+                        'action'        => 'default',
+                        'name'          => 'adminUserList',
+                    ),
+                ),
+            ),
+            # Hijack user admin edit page
+            'hijack-admin-user-edit' => array(
+                'type' => 'Literal',
+                'options' => array(
+                    'route' => '/pages/team/team_user_edit.php',
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'LegacyRS\Controller',
+                        'controller'    => 'Redirect',
+                        'action'        => 'default',
+                        'name'          => 'adminUserEdit',
+                    ),
+                ),
+            ),
+            # Hijack "Help & advice" link
+            'hijack-help' => array(
+                'type' => 'Literal',
+                'options' => array(
+                    'route' => '/pages/help.php',
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'LegacyRS\Controller',
+                        'controller'    => 'Redirect',
+                        'action'        => 'default',
+                        'name'          => 'help',
+                    ),
+                ),
+            ),
+            # Hijack "Contact Us" link
+            'hijack-contact' => array(
+                'type' => 'Literal',
+                'options' => array(
+                    'route' => '/pages/contact.php',
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'LegacyRS\Controller',
+                        'controller'    => 'Redirect',
+                        'action'        => 'default',
+                        'name'          => 'contact',
                     ),
                 ),
             ),

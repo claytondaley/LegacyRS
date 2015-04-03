@@ -18,12 +18,51 @@
 
 return array (
     'LegacyRS' => array(
-        'company_name' => "LegacyRS User",
-        'reply_email' => "email@company.com",
-        'tech_email' => "email+rs_errors@company.com",
-        'favicon' => "img/favicon.ico",
-        'logo' => "img/logo.png",
-        'language' => 'en-US',
+        'config' => array (
+            # DB Configurations
+            "mysql_server" => "localhost",
+            "mysql_username" => "root",
+            "mysql_password" => "",
+            "mysql_db" => "resourcespace",
 
+            # Application Settings
+            'baseurl' => "http://dam4.github.com",
+            'applicationname' => "Digital Asset Management 4 LegacyRS User", # Https recommended
+            'defaultlanguage' => 'en-US', # default language, uses ISO 639-1 language codes ( en, es etc.)
+            'header_favicon' => "/img/favicon.ico", # Must start with slash and be relative to root
+            'slimheader' => true, # Custom logo only available on slimheader
+            'linkedheaderimgsrc' => "/img/logo.png", # Must start with slash and be relative to root
+
+            # Email addresses
+            'email_from' => "email@company.com",
+            'email_notify' => "email@company.com",
+            'email_errors_address' => "email+rs_errors@company.com",
+        ),
+
+        /**
+         * This options supports redirection of various legacy URLs to new routes.  The form of an route is:
+         *
+         * 'name' => array (
+         *     'route' => '<new_route>',
+         *     'ajax'  => false, # Optional, indicates ajax deliver is not permitted
+         *     # Converts a query into a parameter for the route
+         *     'parameterize' => array(
+         *         '<old_query_name>' => '<new_param_name>',
+         *     ),
+         *     # Maps a query field into a new query field
+         *     'requery' => array (
+         *         '<old_query_name>' => '<new_query_name>', # the two names could be the same
+         *     ),
+         * ),
+         *
+         * The following routes are currently supported
+         *  - login
+         *  - logout
+         *  - userProfile (current user, no ID provided)
+         *  - adminUserList
+         *  - adminUserEdit ('ref' carries user ID)
+         */
+        'routes' => array (
+        ),
     ),
 );

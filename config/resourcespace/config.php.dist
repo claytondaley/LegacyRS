@@ -1,0 +1,10 @@
+<?php
+##################################
+## LegacyRS
+## ZF2 Configuration Integration
+##################################
+
+# Load in legacy local settings (only override ZF2 configured settings)
+include "legacy.config.php";
+
+explode($legacyrs_config);
