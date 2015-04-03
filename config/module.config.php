@@ -25,7 +25,7 @@ return array(
     'router' => array(
         'routes' => array(
             # Catchall to make sure legacy pages all get routed to the controller
-            'wildcard' => array(
+            'legacyrs' => array(
                 'type' => 'Hostname',
                 'may_terminate' => true,
                 'options' => array(

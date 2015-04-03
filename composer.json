@@ -21,12 +21,18 @@
           "reference": "resourcespace@6488"
         }
       }
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/claytondaley/DaleyPiwik"
     }
   ],
+  "minimum-stability": "dev",
   "require": {
     "php": ">=5.3.3",
     "zendframework/zendframework": ">2.3",
-    "resourcespace/resourcespace": "6488"
+    "resourcespace/resourcespace": "6488",
+    "claytondaley/piwiktracker": "dev-master"
   },
   "autoload": {
     "psr-0": {

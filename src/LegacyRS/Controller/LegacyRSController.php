@@ -162,6 +162,15 @@ class LegacyRSController extends AbstractActionController
             }
         })  ;
 
+        # Send in configuration
+        $config = $this->getServiceLocator()->get('config')['LegacyRS'];
+        $company_name = $config['copmany_name'];
+        $reply_email = $config['reply_email'];
+        $tech_email = $config['tech_email'];
+        $legacyrs_favicon = $config['favicon'];
+        $legacyrs_path = $this->url('legacyrs');
+        $legacyrs_language = $config['language'];
+
         # Load legacy script
         include $fileName;
 
