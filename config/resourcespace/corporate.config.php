@@ -8,8 +8,8 @@
 # All custom settings should be entered in this file.
 # Options may be copied from config.default.php and configured here.
 
-# https recommended
-$baseurl = "https://default.dam4.org";
+# Must set indirectly because config.default.php will overload it
+$baseurl = 'http://www.dam4.org/fixme';
 
 # Enter randomized values for site security
 $spider_password="TBTT6FD";
@@ -45,12 +45,9 @@ $imagemagick_colorspace = "sRGB";
 # --=== SITE CONFIGURATION ===--
 # Site Configuration
 $defaultlanguage = "en-US"; # default language, uses ISO 639-1 language codes ( en, es etc.)
-$applicationname = "Digital Asset Management 4 Your Company"; # The name of your implementation / installation (e.g. 'MyCompany Resource System')
-
-# Custom logo only available on slimheader
-$slimheader=true;
-$linkedheaderimgsrc = ""; # recommend $baseurl . "/my/path"
+$applicationname = "DAM4 Your Company"; # The name of your implementation / installation (e.g. 'MyCompany Resource System')
 $header_link=true; // turn on to create a clickable area over a logo graphic (to go to home page).
+$slimheader = true;
 
 # Email settings
 $email_from = "my@email.dam";
@@ -65,7 +62,7 @@ $send_statistics=false;
 
 # experimental email notification of php errors to $email_notify.
 $email_errors=true;
-$email_errors_address="my@email.dam";
+$email_errors_address="my+errors@email.dam";
 
 # --=== ACCOUNTS/AUTHENTICATION ===--
 # "U" permission allows management of users in the current group as well as children groups. TO test stricter adherence to the idea of "children only", set this to true.

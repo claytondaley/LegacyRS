@@ -68,6 +68,19 @@ return array(
                     ),
                 ),
             ),
+            # Hijack user change password page
+            'hijack-user-reset-password' => array(
+                'type' => 'Literal',
+                'options' => array(
+                    'route' => '/pages/user_password.php',
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'LegacyRS\Controller',
+                        'controller'    => 'Redirect',
+                        'action'        => 'default',
+                        'name'          => 'resetPassword',
+                    ),
+                ),
+            ),
             # Hijack user admin list page
             'hijack-admin-user-list' => array(
                 'type' => 'Literal',

@@ -325,14 +325,14 @@ class LegacyRSController extends AbstractActionController
             return;
         }
 
-        # The download.php file uses exit() so we must pre-track it
+        # LegacyRS uses download.php to deliver files
         if (substr($url, 0, 18) == "pages/download.php") {
             $actionUrl = $request->getUriString();
             $this->trackDownload($actionUrl);
             return;
         }
 
-        # Track by default
+        # Track as page view by default
         $this->trackPageView($title);
     }
 

@@ -58,9 +58,12 @@ return array (
          * The following routes are currently supported
          *  - login
          *  - logout
+         *  - resetPassword
          *  - userProfile (current user, no ID provided)
          *  - adminUserList
          *  - adminUserEdit ('ref' carries user ID)
+         *  - help
+         *  - contact
          */
         'routes' => array (
         ),
