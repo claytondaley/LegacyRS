@@ -31,7 +31,7 @@
   "require": {
     "php": ">=5.3.3",
     "zendframework/zendframework": ">2.3",
-    "resourcespace/resourcespace": "6488",
+    "resourcespace/resourcespace": "6513",
     "claytondaley/piwiktracker": "dev-master"
   },
   "autoload": {
