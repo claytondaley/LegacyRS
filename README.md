@@ -9,7 +9,7 @@ LegacyRS exemplifies a variety of techniques for handling legacy code:
      - All calls to non-PHP files use the Stream response type to minimize memory impact
  - Dealing with global variables in the legacy codebase (a solution is provided, but alternative suggestions are welcomed)
  - Using buffers to cache legacy pages
-     - LegacyRS uses this technique so it can search the page for <title> tags and push this infomation to an analytics package
+     - LegacyRS uses this technique so it can search the page for `<title>` tags and push this information to an analytics package
      - LegacyRS also shows how to wrap legacy code that itself uses buffers 
  - How to complete page processing if `exit` or `die` is called in the legacy codebase
 
