@@ -9,6 +9,11 @@
     "source": "https://github.com/claytondaley/LegacyRS"
   },
   "homepage": "https://github.com/claytondaley/LegacyRS",
+  "extra": {
+    "branch-alias": {
+      "dev-master": "1.6513.x-dev"
+    }
+  },
   "repositories": [
     {
       "type": "package",
