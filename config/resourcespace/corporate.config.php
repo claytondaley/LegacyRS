@@ -80,6 +80,11 @@ $auto_approve_accounts=false;
 # Require terms on first login?
 $terms_login=false;
 
+# Global permissions
+# Permissions that will be prefixed to all user group permissions
+# T* will put the system in a default-deny mode for resource types
+$global_permissions="T*";
+
 # --=== PAGE TITLES ===--
 # show the title of the resource being viewed in the browser title bar
 $show_resource_title_in_titlebar = true;
